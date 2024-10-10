@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 header_size = 0x1FF # file length in header is size - 0x1FF, header + padding is 0x1FF long
 
-print('The input audio file (.wav, .mp3, .flac, etc.) will be converted to a 31000 hz signed 16-bit little endian PCM file.\n'
+print('The input audio file (.wav, .mp3, .flac, etc.) will be converted to a 31250 hz signed 16-bit little endian PCM file.\n'
       'The number of channels of the output file depends on the game: Rush 2049 is 6, Gauntlet Dark Legacy is 2, and California Speed/Road Burners is 1.\n'
       'If the input file does not have the correct number of channels, then FFmpeg will upmix/downmix as needed\n'
       'For best results in-game, ensure audio level peak at around 0 dB, otherwise sound effects may drown out music.\n'
@@ -66,21 +66,21 @@ num_channels = subprocess.run(shlex.split(ffprobe_command), capture_output=True)
 if args.game == "sf2049" or args.game == "sf2049te" or args.game == "sf2049tea" or args.game == "sf2049se" :
     if num_channels == b'1\n':
         ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-filter_complex", r'[0:a]pan=5.1|c0=c0|c1=c0|c4<c0|c2=c0|c3=c0',
-                          "-ar", "31000", "-ac", "6", "-f", "s16le", "-acodec", "pcm_s16le", "-y", "temp_unheadered.str"]
+                          "-ar", "31250", "-ac", "6", "-f", "s16le", "-acodec", "pcm_s16le", "-y", "temp_unheadered.str"]
     elif num_channels == b'2\n':
         ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-filter_complex", r'[0:a]pan=5.1|c0=c0|c1=c1|c4<c0+c1|c2=c0|c3=c1',
-                          "-ar", "31000", "-ac", "6", "-f", "s16le", "-acodec", "pcm_s16le", "-y", "temp_unheadered.str"]
+                          "-ar", "31250", "-ac", "6", "-f", "s16le", "-acodec", "pcm_s16le", "-y", "temp_unheadered.str"]
     elif num_channels == b'4\n':
         ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-filter_complex", r'[0:a]pan=5.1|c0=c0|c1=c1|c4<c0+c1+c2+c3|c2=c2|c3=c3',
-                          "-ar", "31000", "-ac", "6", "-f", "s16le", "-acodec", "pcm_s16le", "-y", "temp_unheadered.str"]
+                          "-ar", "31250", "-ac", "6", "-f", "s16le", "-acodec", "pcm_s16le", "-y", "temp_unheadered.str"]
     else: # just trust what ffmpeg does for the rest
-        ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-ar", "31000", "-ac", "6", "-f", "s16le", "-acodec",
+        ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-ar", "31250", "-ac", "6", "-f", "s16le", "-acodec",
                           "pcm_s16le", "-y", "temp_unheadered.str"]
 elif args.game == "gauntdl":
-    ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-ar", "31000", "-ac", "2", "-f", "s16le", "-acodec",
+    ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-ar", "31250", "-ac", "2", "-f", "s16le", "-acodec",
                       "pcm_s16le", "-y", args.output]
 elif args.game == "calspeed" or args.game == "roadburn":
-    ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-ar", "31000", "-ac", "1", "-f", "s16le", "-acodec",
+    ffmpeg_command = [ffmpeg_loc, "-i", args.input, "-ar", "31250", "-ac", "1", "-f", "s16le", "-acodec",
                       "pcm_s16le", "-y", args.output]
 else:
     print("Unknown game name.")
